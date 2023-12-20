@@ -80,6 +80,19 @@ class CloudBalancingConstraintProviderTest
                 .penalizesBy(2);
     }
 
+    @ConstraintProviderTest
+    void useThisTestToReproduce(ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> constraintVerifier) {
+        CloudComputer computer1 = new CloudComputer(1, 4, 2, 2, 2);
+        CloudProcess process1 = new CloudProcess(1, 1, 1, 1);
+        CloudProcess process2 = new CloudProcess(2, 3, 1, 1);
+        process1.setComputer(computer1);
+        process2.setComputer(computer1);
+
+        constraintVerifier.verifyThat(CloudBalancingConstraintProvider::differenceInRequiredCpu)
+                .given(computer1, process1, process2)
+                .penalizesBy(2);
+    }
+
     @Override
     protected ConstraintVerifier<CloudBalancingConstraintProvider, CloudBalance> createConstraintVerifier() {
         return ConstraintVerifier.build(new CloudBalancingConstraintProvider(), CloudBalance.class, CloudProcess.class);
